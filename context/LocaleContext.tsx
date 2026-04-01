@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 
 export type CountryCode = 'SE' | 'DK' | 'FI' | 'NO' | 'IS'
 
@@ -95,8 +95,22 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null)
 
+function detectCountry(): CountryCode {
+  if (typeof navigator === 'undefined') return 'SE'
+  const lang = navigator.language?.toLowerCase() ?? ''
+  if (lang.startsWith('da')) return 'DK'
+  if (lang.startsWith('fi')) return 'FI'
+  if (lang.startsWith('nb') || lang.startsWith('nn') || lang.startsWith('no')) return 'NO'
+  if (lang.startsWith('is')) return 'IS'
+  return 'SE'
+}
+
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [country, setCountryState] = useState<CountryCode>('SE')
+
+  useEffect(() => {
+    setCountryState(detectCountry())
+  }, [])
 
   const setCountry = (code: CountryCode) => {
     setCountryState(code)

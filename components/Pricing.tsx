@@ -226,6 +226,11 @@ export default function Pricing() {
         {/* Fine print */}
         <p className="font-sans text-xs text-cream/30 mt-8 text-center">
           Priser inkl. moms. Betalning sker vid beställning.
+          {locale.country !== 'SE' && (
+            <span className="block mt-1 text-cream/20">
+              Priser visas i {locale.currency}. Betalning sker i SEK vid kassa. Kurs: 1 SEK ≈ {locale.rate.toFixed(locale.currency === 'EUR' ? 3 : 2)} {locale.currency}.
+            </span>
+          )}
         </p>
       </div>
     </section>
