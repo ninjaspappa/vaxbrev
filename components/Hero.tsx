@@ -29,7 +29,7 @@ export default function Hero() {
 
           {/* Headline */}
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-cream leading-tight mb-6">
-            Skicka påsen.{' '}
+            Beställ påsen.{' '}
             <br className="hidden sm:block" />
             Skicka jackan.{' '}
             <br className="hidden sm:block" />
