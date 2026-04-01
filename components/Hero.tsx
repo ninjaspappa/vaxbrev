@@ -1,6 +1,18 @@
 'use client'
 
+import { useLocale, type CountryCode } from '../context/LocaleContext'
+
+const HERO_SUB2: Record<CountryCode, string> = {
+  SE: 'Sveriges bekvämlaste omvaxningstjänst för Barbour\u00a0&\u00a0vaxjackor.',
+  DK: 'Danmarks nemmeste re-voksningsservice for Barbour\u00a0&\u00a0voksjacker.',
+  FI: 'Pohjoismaiden vaivattominta vahan uusintapalvelua Barbour-takeille.',
+  NO: 'Norges enkleste omvoksingstjeneste for Barbour\u00a0&\u00a0voksjakter.',
+  IS: 'Þægilegasta endurváxningarþjónustan á Norðurlöndum fyrir Barbour.',
+}
+
 export default function Hero() {
+  const { locale } = useLocale()
+
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     const target = document.getElementById('bestall')
@@ -41,7 +53,7 @@ export default function Hero() {
             Tar du hand om dina knivar för 1&nbsp;000–1&nbsp;500&nbsp;kr – varför inte din jacka för 3&nbsp;000–7&nbsp;000&nbsp;kr?
           </p>
           <p className="font-sans text-base md:text-lg text-cream/50 leading-relaxed mb-10 max-w-xl">
-            Sveriges bekvämlaste omvaxningstjänst för Barbour&nbsp;&amp;&nbsp;vaxjackor.
+            {HERO_SUB2[locale.country]}
           </p>
 
           {/* CTA */}

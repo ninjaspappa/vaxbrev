@@ -1,57 +1,75 @@
 'use client'
 
-const plans = [
-  {
-    id: 'single',
-    name: '1 jacka',
-    price: '1 195',
-    unit: 'kr',
-    popular: false,
-    features: [
-      'Fri frakt tur & retur',
-      'Skyddspåse med returetikett',
-      'Professionell vaxning',
-      'Leverans hem till dörren',
-    ],
-    cta: 'Välj detta paket',
-  },
-  {
-    id: 'double',
-    name: '2 jackor',
-    price: '2 190',
-    unit: 'kr',
-    popular: true,
-    badge: 'Mest populärt',
-    savings: 'Spara 200 kr',
-    features: [
-      'Fri frakt tur & retur',
-      'Skyddspåse med returetikett',
-      'Professionell vaxning – 2 jackor',
-      'Leverans hem till dörren',
-    ],
-    cta: 'Välj detta paket',
-  },
-  {
-    id: 'express',
-    name: 'Expresstillägg',
-    price: '+295',
-    unit: 'kr',
-    popular: false,
-    addOn: true,
-    features: [
-      'Prioriterad hantering',
-      'Leverans inom 1 vecka',
-      'Läggs till på valfritt paket',
-      'Statusuppdatering via e-post',
-    ],
-    cta: 'Lägg till express',
-  },
-]
+import { useLocale, formatPrice } from '../context/LocaleContext'
+
+// Base prices in SEK
+const BASE_PRICES = {
+  single: 1195,
+  double: 2190,
+  express: 295,
+} as const
 
 export default function Pricing() {
+  const { locale } = useLocale()
+
   const handleScroll = () => {
     document.getElementById('bestall')?.scrollIntoView({ behavior: 'smooth' })
   }
+
+  // Apply international surcharge to package prices (not to express)
+  const singleSEK = BASE_PRICES.single + locale.surcharge
+  const doubleSEK = BASE_PRICES.double + locale.surcharge
+  const expressSEK = BASE_PRICES.express
+
+  const plans = [
+    {
+      id: 'single',
+      name: '1 jacka',
+      priceFormatted: formatPrice(singleSEK, locale),
+      popular: false,
+      features: [
+        'Fri frakt tur & retur',
+        'Skyddspåse med returetikett',
+        'Professionell vaxning',
+        'Leverans hem till dörren',
+      ],
+      cta: 'Välj detta paket',
+    },
+    {
+      id: 'double',
+      name: '2 jackor',
+      priceFormatted: formatPrice(doubleSEK, locale),
+      popular: true,
+      badge: 'Mest populärt',
+      savings: locale.country === 'SE' ? 'Spara 200 kr' : null,
+      features: [
+        'Fri frakt tur & retur',
+        'Skyddspåse med returetikett',
+        'Professionell vaxning – 2 jackor',
+        'Leverans hem till dörren',
+      ],
+      cta: 'Välj detta paket',
+    },
+    {
+      id: 'express',
+      name: 'Expresstillägg',
+      priceFormatted: `+${formatPrice(expressSEK, locale)}`,
+      popular: false,
+      addOn: true,
+      features: [
+        'Prioriterad hantering',
+        'Leverans inom 1 vecka',
+        'Läggs till på valfritt paket',
+        'Statusuppdatering via e-post',
+      ],
+      cta: 'Lägg till express',
+    },
+  ]
+
+  const surchargeNote =
+    locale.surcharge > 0
+      ? `inkl. +${formatPrice(locale.surcharge, locale)} internationell frakt`
+      : null
 
   return (
     <section id="priser" className="bg-forest-green py-20 md:py-28">
@@ -93,49 +111,75 @@ export default function Pricing() {
 
               <div className="p-8 flex-1 flex flex-col">
                 {/* Plan name */}
-                <p className={`font-sans text-xs font-semibold tracking-widest uppercase mb-4 ${
-                  plan.popular ? 'text-gold' : plan.addOn ? 'text-gold/70' : 'text-cream/50'
-                }`}>
+                <p
+                  className={`font-sans text-xs font-semibold tracking-widest uppercase mb-4 ${
+                    plan.popular
+                      ? 'text-gold'
+                      : plan.addOn
+                      ? 'text-gold/70'
+                      : 'text-cream/50'
+                  }`}
+                >
                   {plan.name}
                 </p>
 
                 {/* Price */}
                 <div className="flex items-end gap-1 mb-1">
-                  <span className={`font-serif text-5xl font-normal leading-none ${
-                    plan.popular ? 'text-forest-green' : 'text-cream'
-                  }`}>
-                    {plan.price}
-                  </span>
-                  <span className={`font-sans text-lg mb-1 ${
-                    plan.popular ? 'text-forest-green/60' : 'text-cream/50'
-                  }`}>
-                    {plan.unit}
+                  <span
+                    className={`font-serif text-4xl font-normal leading-none ${
+                      plan.popular ? 'text-forest-green' : 'text-cream'
+                    }`}
+                  >
+                    {plan.priceFormatted}
                   </span>
                 </div>
 
+                {/* Surcharge note */}
+                {surchargeNote && !plan.addOn && (
+                  <p
+                    className={`font-sans text-xs mt-1 mb-1 ${
+                      plan.popular ? 'text-gray-400' : 'text-cream/40'
+                    }`}
+                  >
+                    {surchargeNote}
+                  </p>
+                )}
+
                 {/* Savings tag */}
                 {plan.savings && (
-                  <span className="inline-block bg-gold/20 text-gold text-xs font-sans font-medium px-2.5 py-1 mb-5 w-fit">
+                  <span className="inline-block bg-gold/20 text-gold text-xs font-sans font-medium px-2.5 py-1 mb-5 w-fit mt-2">
                     {plan.savings}
                   </span>
                 )}
 
                 {/* Add-on tag */}
                 {plan.addOn && (
-                  <p className="font-sans text-xs text-cream/50 mb-5">
+                  <p className="font-sans text-xs text-cream/50 mb-5 mt-2">
                     Läggs till på valbart paket
                   </p>
                 )}
 
-                {!plan.savings && !plan.addOn && <div className="mb-5" />}
+                {!plan.savings && !plan.addOn && !surchargeNote && (
+                  <div className="mb-5" />
+                )}
+                {!plan.savings && !plan.addOn && surchargeNote && (
+                  <div className="mb-3" />
+                )}
 
                 {/* Divider */}
-                <div className={`h-px mb-6 ${plan.popular ? 'bg-gray-200' : 'bg-cream/10'}`} />
+                <div
+                  className={`h-px mb-6 ${
+                    plan.popular ? 'bg-gray-200' : 'bg-cream/10'
+                  }`}
+                />
 
                 {/* Features */}
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 font-sans text-sm">
+                    <li
+                      key={feature}
+                      className="flex items-start gap-3 font-sans text-sm"
+                    >
                       <svg
                         className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
                           plan.popular ? 'text-forest-green' : 'text-gold'
@@ -145,9 +189,18 @@ export default function Pricing() {
                         viewBox="0 0 24 24"
                         aria-hidden="true"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2.5}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
-                      <span className={plan.popular ? 'text-gray-600' : 'text-cream/70'}>
+                      <span
+                        className={
+                          plan.popular ? 'text-gray-600' : 'text-cream/70'
+                        }
+                      >
                         {feature}
                       </span>
                     </li>
