@@ -37,9 +37,11 @@ export default function Hero() {
           </h1>
 
           {/* Subtext */}
-          <p className="font-sans text-lg md:text-xl text-cream/75 leading-relaxed mb-10 max-w-xl">
+          <p className="font-sans text-lg md:text-xl text-cream/75 leading-relaxed mb-3 max-w-xl">
+            Tar du hand om dina knivar för 1&nbsp;000–1&nbsp;500&nbsp;kr – varför inte din jacka för 3&nbsp;000–7&nbsp;000&nbsp;kr?
+          </p>
+          <p className="font-sans text-base md:text-lg text-cream/50 leading-relaxed mb-10 max-w-xl">
             Sveriges bekvämlaste omvaxningstjänst för Barbour&nbsp;&amp;&nbsp;vaxjackor.
-            Från dörr till dörr – utan krångel.
           </p>
 
           {/* CTA */}
